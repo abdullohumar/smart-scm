@@ -2,62 +2,69 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
-use Filament\Schemas\Schema; // GANTI: Gunakan Schema
-use Filament\Forms; // Kita tetap butuh ini untuk Components (TextInput, etc)
+use Filament\Schemas\Schema;
+
+// 1. Ambil Layout dari SCHEMAS
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+
+// 2. Ambil Input dari FORMS
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 
 class ProductForm
 {
-    // GANTI: Parameter $schema, return type Schema
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->components([ // GANTI: method 'schema()' biasanya jadi 'components()' di base Schema
-                Forms\Components\Group::make()
+            ->components([
+                Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Informasi Produk')
+                        Section::make('Informasi Produk')
                             ->schema([
-                                Forms\Components\TextInput::make('name')
+                                TextInput::make('name')
                                     ->required()
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('sku')
+                                TextInput::make('sku')
                                     ->label('SKU (Auto)')
                                     ->disabled()
                                     ->dehydrated(false)
                                     ->visible(fn ($record) => $record !== null),
-                                Forms\Components\TextInput::make('barcode')
+                                TextInput::make('barcode')
                                     ->label('Barcode/QR Value')
                                     ->unique(ignoreRecord: true),
-                                Forms\Components\Textarea::make('description')
+                                Textarea::make('description')
                                     ->columnSpanFull(),
                             ])->columns(2),
 
-                        Forms\Components\Section::make('Harga & Stok')
+                        Section::make('Harga & Stok')
                             ->schema([
-                                Forms\Components\TextInput::make('purchase_price')
+                                TextInput::make('purchase_price')
                                     ->label('Harga Beli')
                                     ->numeric()
                                     ->prefix('Rp'),
-                                Forms\Components\TextInput::make('selling_price')
+                                TextInput::make('selling_price')
                                     ->label('Harga Jual')
                                     ->numeric()
                                     ->prefix('Rp'),
-                                Forms\Components\TextInput::make('minimum_stock')
+                                TextInput::make('minimum_stock')
                                     ->label('Min. Stok (Alert)')
                                     ->numeric()
                                     ->default(10),
-                                Forms\Components\TextInput::make('unit')
+                                TextInput::make('unit')
                                     ->label('Satuan')
                                     ->default('pcs'),
                             ])->columns(2),
                     ])->columnSpan(2),
 
-                Forms\Components\Group::make()
+                Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Status')
+                        Section::make('Status')
                             ->schema([
-                                Forms\Components\Toggle::make('is_active')
+                                Toggle::make('is_active')
                                     ->default(true),
-                                Forms\Components\Toggle::make('has_variants')
+                                Toggle::make('has_variants')
                                     ->label('Punya Varian?'),
                             ]),
                     ])->columnSpan(1),
